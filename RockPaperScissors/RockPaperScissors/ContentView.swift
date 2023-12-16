@@ -17,6 +17,7 @@ struct ContentView: View {
     @State private var computerChoice = LungeTypes.allCases.randomElement() ?? .rock
     @State private var selectedLunge: LungeTypes?
 
+    let maxAnswercount = 10
     
     var question: some View {
         Text(shouldWin ? "Which one wins?" : "Which one loses?")
@@ -38,14 +39,8 @@ struct ContentView: View {
                 
                 Text(computerChoice.rawValue)
                     .font(.system(size: 200))
-                   
-                Group {
-                    if shouldWin {
-                        question
-                    } else {
-                        question
-                    }
-                }
+              
+                question
                 
                 HStack(spacing: 20) {
                     ForEach(LungeTypes.allCases, id: \.self) { lunge in
@@ -81,7 +76,7 @@ struct ContentView: View {
     func userSelected(_ userChoice: LungeTypes) {
         let winModifier: Int = shouldWin ? 1 : -1
         
-        if answerCount != 10 {
+        if answerCount != maxAnswercount {
             switch (userChoice, computerChoice) {
             case (.rock, .scissors), (.paper, .rock), (.scissors, .paper):
                 score += winModifier
@@ -95,10 +90,11 @@ struct ContentView: View {
                 }
             }
             
-            computerChoice = LungeTypes.allCases.randomElement() ?? .rock
-            answerCount += 1
-            shouldWin.toggle()
             selectedLunge = userChoice
+            answerCount += 1
+            computerChoice = LungeTypes.allCases.randomElement() ?? .rock
+            shouldWin.toggle()
+           
             
         } else {
             isFinish = true
